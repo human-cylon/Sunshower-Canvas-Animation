@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+canvas {
+    margin: 0;
+    padding: 0;
+}
+
+.floater {
+    float: left;
+}
+</style>
+<title></title>
+</head>
+<body>
+<div id="bloc">
+
+<canvas id="sky" width="1200px" height="900px"></canvas>
+
+<div id="coord" class="floater">
+</div>
+</div>
+<script>
+var canvas = document.getElementById("sky");
+var ctx = canvas.getContext("2d", { alpha: false });
+
+var e = 0; //e and f are start coordinates for the rays
+var f = 0;
+var replicate; //this will draw more arcs, ranges from 1 to 10
+var size = 70;
+var tall = 50;
+var cpx = 1; //control point x
+var everySecondDown = 0;
+var slice;
+var dy = 1;
+var dw = 1;
+
+
+function sunGlobe() {
+    ctx.beginPath();
+    ctx.arc(628, 352, 180, 0, 2*Math.PI);
+    var sun = ctx.createRadialGradient(628, 352, 30, 628, 352, 140);
+    sun.addColorStop(0, '#fff7cc');
+    sun.addColorStop(0.4, '#fff099');
+    sun.addColorStop(1, '#ffd700');
+    ctx.fillStyle = sun;
+    ctx.strokeStyle = 'yellow';
+    ctx.lineWidth = 0.6;
+    ctx.shadowColor = '#FFD700';
+    ctx.fill();
+    ctx.stroke();}
+
+function cloud() {
+    ctx.beginPath();
+    ctx.moveTo(398, 309);
+    ctx.quadraticCurveTo(453, 180, 554, 303); //first
+    ctx.quadraticCurveTo(572, 319, 588, 303); //rounder
+    ctx.quadraticCurveTo(700, 181, 749, 310); //second
+    ctx.quadraticCurveTo(761, 355, 802, 373); //rounder
+    ctx.quadraticCurveTo(989, 468, 804, 526); //third
+    ctx.quadraticCurveTo(779, 533, 780, 562); //rounder
+    ctx.quadraticCurveTo(785, 685, 677, 593); //fourth
+    ctx.quadraticCurveTo(664, 583, 654, 595); //rounder
+    ctx.quadraticCurveTo(527, 728, 441, 608); //fifth
+    ctx.quadraticCurveTo(432, 589, 409, 591); //rounder
+    ctx.quadraticCurveTo(197, 595, 256, 476); //sixth
+    ctx.quadraticCurveTo(263, 460, 249, 437); //rounder
+    ctx.quadraticCurveTo(178, 329, 357, 333); //seventh
+    ctx.quadraticCurveTo(388, 332, 398, 309); //rounder
+    ctx.closePath();
+    ctx.shadowColor = 'oldlace';
+    ctx.lineWidth = 6;
+    ctx.lineJoin = 'round';
+    ctx.fillStyle = 'white';
+    ctx.fill();
+
+
+    ctx.save();
+
+    ctx.beginPath();
+    ctx.moveTo(398, 309);
+    ctx.quadraticCurveTo(453, 180, 554, 303); //first
+    ctx.quadraticCurveTo(572, 319, 588, 303); //rounder
+    ctx.quadraticCurveTo(700, 181, 749, 310); //second
+    ctx.quadraticCurveTo(761, 355, 802, 373); //rounder
+    ctx.quadraticCurveTo(989, 468, 804, 526); //third
+    ctx.quadraticCurveTo(779, 533, 780, 562); //rounder
+    ctx.quadraticCurveTo(785, 685, 677, 593); //fourth
+    ctx.quadraticCurveTo(664, 583, 654, 595); //rounder
+    ctx.quadraticCurveTo(527, 728, 441, 608); //fifth
+    ctx.quadraticCurveTo(432, 589, 409, 591); //rounder
+    ctx.quadraticCurveTo(197, 595, 256, 476); //sixth
+    ctx.quadraticCurveTo(263, 460, 249, 437); //rounder
+    ctx.quadraticCurveTo(178, 329, 357, 333); //seventh
+    ctx.quadraticCurveTo(388, 332, 398, 309); //rounder
+    ctx.clip();
+
+    ctx.translate(398-398*1.1, 309-309*1.1);
+    ctx.scale(1.062, 1.062);
+    ctx.beginPath();
+    ctx.moveTo(398, 309);
+    ctx.quadraticCurveTo(453, 180, 554, 303); //first
+    ctx.quadraticCurveTo(572, 319, 588, 303); //rounder
+    ctx.quadraticCurveTo(700, 181, 749, 310); //second
+    ctx.quadraticCurveTo(761, 355, 802, 373); //rounder
+    ctx.quadraticCurveTo(989, 468, 804, 526); //third
+    ctx.quadraticCurveTo(779, 533, 780, 562); //rounder
+    ctx.quadraticCurveTo(785, 685, 677, 593); //fourth
+    ctx.quadraticCurveTo(664, 583, 654, 595); //rounder
+    ctx.quadraticCurveTo(527, 728, 441, 608); //fifth
+    ctx.quadraticCurveTo(432, 589, 409, 591); //rounder
+    ctx.quadraticCurveTo(197, 595, 256, 476); //sixth
+    ctx.quadraticCurveTo(263, 460, 249, 437); //rounder
+    ctx.quadraticCurveTo(178, 329, 357, 333); //seventh
+    ctx.quadraticCurveTo(388, 332, 398, 309); //rounder
+    ctx.closePath();
+    ctx.shadowColor = 'black';
+    ctx.lineWidth = 6;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.strokeStyle = 'lightyellow';
+    ctx.stroke();
+    ctx.restore();
+}
+
+
+function sunShine() {
+    ctx.save();
+    ctx.translate(628, 352);
+    ctx.rotate(dw * Math.PI / 720);
+    for (slice = 1; slice < 13; slice++) {
+        ctx.rotate(Math.PI / 6); rays();
+}
+
+    function rays() {
+        ctx.beginPath();
+        ctx.moveTo(e, f);
+        for (replicate = 1; replicate < canvas.width / size + 1; replicate++) {
+            var tallTwo;
+            if (cpx == 3 + 4 * everySecondDown) {
+                tallTwo = f + f - tall; everySecondDown += 1;} 
+            else {tallTwo = tall;}
+            ctx.quadraticCurveTo(e + size / 2 * cpx, tallTwo, e + size * replicate, f);
+            cpx += 2;
+            }
+        if (cpx > canvas.width / size + 1) {
+            cpx = 1; everySecondDown = 0;}
+        ctx.shadowColor = '#fff7cc';
+        ctx.lineWidth = 25;
+        ctx.strokeStyle = 'yellow';
+        ctx.stroke();
+    }
+    ctx.restore();
+}
+
+
+function droplet() {
+    var a;
+    var b = 537;
+    var n;
+    var i;
+    for (i = 0; i < 5; i++) {
+        for (n = 0; n < 6; n++) {
+            var gap = 390 / 5;
+            a = 368 + gap * n;
+            ctx.beginPath();
+            ctx.arc(a, b + dy, 9, 0, Math.PI);
+            ctx.moveTo(a + 9, b + dy);
+            ctx.quadraticCurveTo(a + 9, b - 8 + dy, a, b - 17 + dy); //control point x = right arc point x
+            ctx.quadraticCurveTo(a - 9, b - 8 + dy, a - 9, b + dy); //control point x = left arc point x
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            var sparkle = ctx.createRadialGradient(a + 1, b - 1 + dy, 2, a + 1, b - 1 + dy, 7);
+            sparkle.addColorStop(0, 'white');
+            sparkle.addColorStop(1, '#dbe4f0');
+            ctx.strokeStyle = '#dbe4f0';
+            ctx.fillStyle = sparkle;
+            ctx.lineWidth = 2;
+            ctx.fill();
+        }
+        b += (canvas.height - 10 - 537) / 4;
+    }
+}
+
+function makeItRain() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "skyblue";
+    ctx.fillRect(0,0, canvas.width, canvas.height);
+    sunShine();
+    sunGlobe();
+    droplet();
+    cloud();
+    dw += 1;
+    dy += 5;
+    if (dy > (canvas.height - 10 - 537) / 4) {
+        dy = 0;}
+    window.requestAnimationFrame(makeItRain);
+}
+
+function init() {
+    window.requestAnimationFrame(makeItRain);
+}
+
+init();
+
+</script>
+
+</body>
+</html>
